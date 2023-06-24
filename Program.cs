@@ -1,25 +1,37 @@
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http.Json;
+using Microsoft.EntityFrameworkCore;
+using Pokedex.Data;
+using Pokedex.Endpoints;
+
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddDbContext<PokedexContext>(opt => opt.UseSqlite("Data Source = Pokedex.db"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+//configuration of JSON responses
+builder.Services.Configure<JsonOptions>(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
-app.UseHttpsRedirection();
+var app = builder.Build();
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseAuthorization();
+await MigrateDatabase(app.Services, app.Logger);
 
-app.MapControllers();
+TrainerEndpoints.AddTrainerEndpoints(app);
 
 app.Run();
+
+async Task MigrateDatabase(IServiceProvider services, ILogger logger)
+{
+    //automatic database migration 
+    await using var db = services.CreateScope().ServiceProvider.GetRequiredService<PokedexContext>();
+    if (db.Database.GetPendingMigrations().Any())
+    {
+        logger.LogInformation("Migrating database");
+        await db.Database.MigrateAsync();
+    }
+}
