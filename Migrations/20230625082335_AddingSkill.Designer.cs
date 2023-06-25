@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pokedex.Data;
 
@@ -10,9 +11,11 @@ using Pokedex.Data;
 namespace Pokedex.Migrations
 {
     [DbContext(typeof(PokedexContext))]
-    partial class PokedexContextModelSnapshot : ModelSnapshot
+    [Migration("20230625082335_AddingSkill")]
+    partial class AddingSkill
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.7");

@@ -21,7 +21,8 @@ app.UseSwaggerUI();
 
 await MigrateDatabase(app.Services, app.Logger);
 
-TrainerEndpoints.AddTrainerEndpoints(app);
+SkillEndpoint.AddSkillEndpoints(app);
+PokemonEndpoint.AddPokemonEndpoint(app);
 
 app.Run();
 
