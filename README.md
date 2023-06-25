@@ -9,7 +9,7 @@ Pokemon:
 - Numer
 - Wzrost
 - Waga
-- Umiejętności (lista)
+- Umiejętność
 
 Umiejętność:
 - Nazwa
